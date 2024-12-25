@@ -1,0 +1,7 @@
+{
+   "id": 1,
+   "name":"Custom Order",
+   "version":"0.0.1",
+   "description":"An addition sort setting that prevents Balatro from re-ordering your cards after a hand"
+
+}
