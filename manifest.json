@@ -1,7 +1,11 @@
 {
-   "id": 1,
-   "name":"Custom Order",
-   "version":"0.0.1",
-   "description":"An addition sort setting that prevents Balatro from re-ordering your cards after a hand"
-
+    "id": "order_lock",
+    "name": "Order Lock",
+    "version": "1.0.0",
+    "description": [
+        "Prevent Balatro from rearranging hands."
+    ],
+    "author": "CapnRedB",
+    "load_before": [],
+    "load_after": []
 }
