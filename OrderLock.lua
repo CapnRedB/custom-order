@@ -7,9 +7,21 @@
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
+
 local ui_boxRef = create_UIBox_buttons
  LOCKED=false
+ lockText='LOCK'
+ lockColor=G.C.BLUE
+ --Override the create_UIBox_buttons function so that it adds our new lock button.
+ local lock_toggle ={
+  active_colour=G.C.RED,
+  inactive_colour = G.C.BLUE,
+  label='LOCKED',
+  h=1.3,
+  w=1
+ }
 
+ lock_toggle_button=create_toggle(lock_toggle)
 function create_UIBox_buttons()
   local ui_box=ui_boxRef()
     local text_scale = 0.45
@@ -26,6 +38,9 @@ function create_UIBox_buttons()
       }}
     }}
 
+    local sort_button = {n=G.UIT.C, config={align = "cm", minh = 0.7, minw = 0.9, padding = 0.1, r = 0.1, hover = true, colour =lockColor, button = "sort_lock", shadow = true}, nodes={
+      lock_toggle_button
+  }}
     local ui_box = {
       n=G.UIT.ROOT, config = {align = "cm", minw = 1, minh = 0.3,padding = 0.15, r = 0.1, colour = G.C.CLEAR}, nodes={
           G.SETTINGS.play_button_pos == 1 and discard_button or play_button,
@@ -42,9 +57,7 @@ function create_UIBox_buttons()
                 {n=G.UIT.C, config={align = "cm", minh = 0.7, minw = 0.9, padding = 0.1, r = 0.1, hover = true, colour =G.C.ORANGE, button = "sort_hand_suit", shadow = true}, nodes={
                   {n=G.UIT.T, config={text = localize('k_suit'), scale = text_scale*0.7, colour = G.C.UI.TEXT_LIGHT}}
                 }},
-                {n=G.UIT.C, config={align = "cm", minh = 0.7, minw = 0.9, padding = 0.1, r = 0.1, hover = true, colour =G.C.BLUE, button = "sort_lock", shadow = true}, nodes={
-                    {n=G.UIT.T, config={text = ('LOCK'), scale = text_scale*0.7, colour = G.C.UI.TEXT_LIGHT}}
-                }}
+                sort_button
               }}
             }}
           }},
@@ -54,15 +67,21 @@ function create_UIBox_buttons()
       }
     return ui_box
   end
-
-G.FUNCS.sort_lock = function(e)
+--create new function to lock out sorting
+--TODO need to add a UI change to show when the hand is locked or not. Make the button red and add a lock and unlock icon.
+G.FUNCS.sort_lock = function()
   if LOCKED then
     LOCKED=false
+    lockText='LOCK'
+    lockColor=G.C.BLUE
     return
   end
   LOCKED=true
+  lockText='UNLOCK'
+  lockColor=G.C.RED
 end
 
+--override CardArea's sort method to check for the LOCKED boolean and skip any sorting if it is set
   function CardArea:sort(method)
     if LOCKED then
       return
@@ -80,6 +99,19 @@ end
         table.sort(self.cards, function (a, b) return (a.config.card.order or a.config.center.order) < (b.config.card.order or b.config.center.order) end )
     end
 end
+--We need to override the suit functions to unlock if its pressed
+G.FUNCS.sort_hand_suit = function(e)
+  LOCKED=false
+  G.hand:sort('suit desc')
+  play_sound('paper1')
+end
+
+G.FUNCS.sort_hand_value = function(e)
+  LOCKED=false
+  G.hand:sort('desc')
+  play_sound('paper1')
+end
 
 -------------------------------------------------
 ------------MOD CODE END----------------------
+---
