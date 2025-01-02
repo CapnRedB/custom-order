@@ -69,7 +69,7 @@ function create_UIBox_buttons()
   end
 --create new function to lock out sorting
 --TODO need to add a UI change to show when the hand is locked or not. Make the button red and add a lock and unlock icon.
-G.FUNCS.sort_lock = function()
+G.FUNCS.sort_lock = function(e)
   if LOCKED then
     LOCKED=false
     lockText='LOCK'
@@ -111,6 +111,8 @@ G.FUNCS.sort_hand_value = function(e)
   G.hand:sort('desc')
   play_sound('paper1')
 end
+
+
 
 -------------------------------------------------
 ------------MOD CODE END----------------------
